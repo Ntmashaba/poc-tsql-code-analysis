@@ -1,17 +1,13 @@
-image: docker:latest
-
-services:
-  - docker:dind
-
-variables:
-  SONAR_HOST_URL: "http://your-sonarqube-host-url"
-  SONAR_TOKEN: "your-sonarqube-token"
-
 stages:
-  - build_and_analyze
+  - analyze
 
-build_and_analyze:
-  stage: build_and_analyze
+sonarqube:
+  stage: analyze
+  image: <container-registry-url>/mycompany/sonar-scanner-msbuild:6.0
   script:
-    - docker build -t poc-tsql-code-analysis .
-    - docker run -e SONAR_HOST_URL="$SONAR_HOST_URL" -e SONAR_TOKEN="$SONAR_TOKEN" poc-tsql-code-analysis
+    - dotnet ./sonar/SonarScanner.MSBuild.dll begin /k:"poc-tsql-code-analysis" /d:sonar.host.url="$SONAR_HOST_URL" /d:sonar.login="$SONAR_TOKEN"
+    - dotnet build SqlProject/Database1.sqlproj /t:Rebuild /p:Configuration=Release
+    - dotnet ./sonar/SonarScanner.MSBuild.dll end /d:sonar.login="$SONAR_TOKEN"
+  variables:
+    SONAR_HOST_URL: "https://your-sonarqube-server"
+    SONAR_TOKEN: "$SONAR_TOKEN"
