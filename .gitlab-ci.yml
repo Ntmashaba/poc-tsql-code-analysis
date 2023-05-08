@@ -1,0 +1,17 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  SONAR_HOST_URL: "http://your-sonarqube-host-url"
+  SONAR_TOKEN: "your-sonarqube-token"
+
+stages:
+  - build_and_analyze
+
+build_and_analyze:
+  stage: build_and_analyze
+  script:
+    - docker build -t poc-tsql-code-analysis .
+    - docker run -e SONAR_HOST_URL="$SONAR_HOST_URL" -e SONAR_TOKEN="$SONAR_TOKEN" poc-tsql-code-analysis

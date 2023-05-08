@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Sql">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="**\*.sql" />
+  </ItemGroup>
+</Project>
